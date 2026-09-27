@@ -1,0 +1,71 @@
+import Foundation
+import UsageMeterCore
+
+/// App metadata + localized formatting of the dynamic strings Core hands us as
+/// data. Static UI labels are localized directly via SwiftUI `Text` (main-bundle
+/// `.strings`); this file covers the pieces that need interpolation or mapping.
+enum AppInfo {
+    /// e.g. "1.0.0 (1)"
+    static var versionString: String {
+        let info = Bundle.main.infoDictionary
+        let short = info?["CFBundleShortVersionString"] as? String ?? "?"
+        let build = info?["CFBundleVersion"] as? String ?? "?"
+        return "\(short) (\(build))"
+    }
+
+    /// e.g. "1.0.4" — what the update check compares against.
+    static var shortVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+    }
+
+    /// Public source repository.
+    static let repoURL = URL(string: "https://github.com/usagemeter-sro/UsageMeter")!
+}
+
+enum Localized {
+    static func string(_ key: String, _ args: CVarArg...) -> String {
+        let format = NSLocalizedString(key, comment: "")
+        return args.isEmpty ? format : String(format: format, arguments: args)
+    }
+
+    /// "resets in 3h 12m" / "reset za 3 h 12 min"
+    static func reset(_ value: ResetCountdown.Value) -> String {
+        switch value {
+        case .now:
+            return string("reset.now")
+        case .minutes(let m):
+            return string("reset.in_minutes", m)
+        case .hoursMinutes(let h, let m):
+            return m > 0 ? string("reset.in_hours_minutes", h, m) : string("reset.in_hours", h)
+        case .days(let d, let h):
+            return h > 0 ? string("reset.in_days_hours", d, h) : string("reset.in_days", d)
+        }
+    }
+
+    static func updatedAt(_ date: Date) -> String {
+        string("updated_at", date.formatted(date: .omitted, time: .shortened))
+    }
+
+    static func error(_ kind: UsageErrorKind) -> String {
+        switch kind {
+        case .offline:      return string("error.offline")
+        case .notLoggedIn:  return string("error.not_logged_in")
+        case .signedOut:    return string("error.signed_out")
+        case .unauthorized: return string("error.unauthorized")
+        case .credentialsUnreadable: return string("error.credentials_unreadable")
+        case .rateLimited:  return string("error.rate_limited")
+        case .server(let c): return string("error.server", c)
+        case .unknown:      return string("error.unknown")
+        }
+    }
+
+    /// Sign-in window errors (OAuth flow), shown inline under the paste field.
+    static func signInError(_ error: Error) -> String {
+        switch error {
+        case OAuthError.malformedCode:  return string("signin.error.malformed")
+        case OAuthError.stateMismatch:  return string("signin.error.state_mismatch")
+        case OAuthError.offline:        return string("signin.error.offline")
+        default:                        return string("signin.error.failed")
+        }
+    }
+}

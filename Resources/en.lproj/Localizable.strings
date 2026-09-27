@@ -1,0 +1,113 @@
+/* Menu panel */
+"Usage" = "Usage";
+"Refresh now" = "Refresh now";
+"Spend" = "Spend";
+"Loading…" = "Loading…";
+"Preferences…" = "Preferences…";
+"Quit" = "Quit";
+
+"window.5h" = "5h window";
+"window.weekly" = "Weekly";
+
+"updated_at" = "Updated %@";
+
+/* Reset countdowns */
+"reset.now" = "resets now";
+"reset.in_minutes" = "resets in %ldm";
+"reset.in_hours" = "resets in %ldh";
+"reset.in_hours_minutes" = "resets in %ldh %ldm";
+"reset.in_days" = "resets in %ldd";
+"reset.in_days_hours" = "resets in %ldd %ldh";
+
+/* Errors */
+"error.offline" = "Offline";
+"error.not_logged_in" = "Not logged in — run `claude`";
+"error.signed_out" = "Signed out — sign in again";
+"error.unauthorized" = "Session expired — run `claude`";
+"error.credentials_unreadable" = "Couldn't read stored credentials";
+"error.rate_limited" = "Too many requests — retrying soon";
+"error.server" = "Server error (HTTP %ld)";
+"error.unknown" = "Something went wrong";
+
+/* Sign-in */
+"signin.window_title" = "Sign in with Claude";
+"signin.explainer" = "Sign in with your Claude account to show your usage. No Claude Code installation needed.";
+"signin.open_browser" = "Open claude.ai to sign in";
+"signin.paste_caption" = "After approving, copy the code shown and paste it here:";
+"signin.paste_placeholder" = "Paste code (CODE#STATE)";
+"signin.confirm" = "Sign in";
+"signin.done" = "Done";
+"signin.success" = "Signed in as %@";
+"signin.error.malformed" = "That doesn't look like a complete code — copy the whole string.";
+"signin.error.state_mismatch" = "The code doesn't match this sign-in attempt — start over from step 1.";
+"signin.error.failed" = "Sign-in failed — try again.";
+"signin.error.offline" = "Offline — check your connection and try again.";
+"signin.button" = "Sign in with Claude";
+"signin.claude_code_hint" = "Using Claude Code? No setup needed — UsageMeter finds its login automatically.";
+"empty.not_logged_in.body" = "No Claude credentials found on this Mac.";
+"empty.signed_out.body" = "You've been signed out.";
+
+/* Account (Preferences) */
+"Account" = "Account";
+"account.signed_in_as" = "Signed in as";
+"account.sign_out" = "Sign out";
+"account.sign_in" = "Sign in…";
+"account.fallback_hint" = "Not signed in — using Claude Code's login when available.";
+
+/* Menu-bar display modes */
+"barmode.dot_5h" = "Dot + 5h %";
+"barmode.5h" = "5h % only";
+"barmode.5h_7d" = "5h % · weekly %";
+"barmode.dot" = "Dot only";
+
+/* Preferences */
+"Menu bar" = "Menu bar";
+"Format" = "Format";
+"Per-model breakdown in menu" = "Per-model breakdown in menu";
+"Refresh" = "Refresh";
+"Interval" = "Interval";
+"Startup" = "Startup";
+"Launch at login" = "Launch at login";
+"Colour thresholds" = "Colour thresholds";
+"Green below" = "Green below";
+"Orange below" = "Orange below";
+"threshold.above_red" = "Above %ld%% is red.";
+"Updates" = "Updates";
+"Check for updates automatically" = "Check for updates automatically";
+"About" = "About";
+"Version" = "Version";
+"GitHub" = "GitHub";
+
+/* Update check */
+"update.available" = "New version %@ — download";
+
+/* Welcome guide (first launch) */
+"welcome.window_title" = "Welcome to UsageMeter";
+"welcome.title" = "Welcome to UsageMeter";
+"welcome.subtitle" = "Three things to know, then you're set.";
+"welcome.step1.title" = "Find it in the menu bar";
+"welcome.step1.body" = "UsageMeter lives in your menu bar, top right. The number is how much of your current 5-hour window you've used; click it for the weekly window, reset countdowns and per-model details.";
+"welcome.step1.preview_caption" = "Right now it shows:";
+"welcome.step2.title" = "Connect to Claude";
+"welcome.step2.checking" = "Looking for a Claude login on this Mac…";
+"welcome.step2.claude_code" = "Connected — using your Claude Code login. Nothing to set up.";
+"welcome.step2.signed_in" = "Signed in with your Claude account.";
+"welcome.step2.needs_sign_in" = "No Claude login found on this Mac. Sign in with your Claude account — it takes a minute.";
+"welcome.step2.or_claude_code" = "Or install Claude Code and run `claude` — UsageMeter picks up its login automatically.";
+"welcome.retry" = "Retry";
+"welcome.step3.title" = "Launch at login";
+"welcome.launch_at_login" = "Start UsageMeter when you log in";
+"welcome.step3.body" = "Everything else — bar format, refresh interval, colour thresholds — lives in";
+"welcome.done" = "Done";
+"welcome.show_again" = "Show welcome guide…";
+
+/* Muse section */
+"muse.window" = "Muse 5h";
+"muse.weekly" = "Muse weekly";
+"muse.not_logged_in" = "Muse: not logged in — run `muse login` in Terminal";
+"muse.no_quota" = "Muse: connected, no quota data yet";
+
+/* Manual update check */
+"update.check_now" = "Check now";
+"update.up_to_date" = "You're up to date (%@)";
+"update.check_failed" = "Couldn't check — try again later";

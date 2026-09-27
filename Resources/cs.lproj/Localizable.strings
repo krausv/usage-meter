@@ -1,0 +1,113 @@
+/* Menu panel */
+"Usage" = "Spotřeba";
+"Refresh now" = "Obnovit teď";
+"Spend" = "Útrata";
+"Loading…" = "Načítám…";
+"Preferences…" = "Předvolby…";
+"Quit" = "Ukončit";
+
+"window.5h" = "5h okno";
+"window.weekly" = "Týden";
+
+"updated_at" = "Aktualizováno %@";
+
+/* Reset countdowns */
+"reset.now" = "reset teď";
+"reset.in_minutes" = "reset za %ld min";
+"reset.in_hours" = "reset za %ld h";
+"reset.in_hours_minutes" = "reset za %ld h %ld min";
+"reset.in_days" = "reset za %ld d";
+"reset.in_days_hours" = "reset za %ld d %ld h";
+
+/* Errors */
+"error.offline" = "Bez připojení";
+"error.not_logged_in" = "Nepřihlášeno — spusť `claude`";
+"error.signed_out" = "Odhlášeno — přihlas se znovu";
+"error.unauthorized" = "Přihlášení vypršelo — spusť `claude`";
+"error.credentials_unreadable" = "Uložené přihlášení se nepodařilo přečíst";
+"error.rate_limited" = "Příliš mnoho požadavků — zkusím to znovu";
+"error.server" = "Chyba serveru (HTTP %ld)";
+"error.unknown" = "Něco se pokazilo";
+
+/* Sign-in */
+"signin.window_title" = "Přihlásit se přes Claude";
+"signin.explainer" = "Přihlas se svým Claude účtem a uvidíš svou spotřebu. Claude Code není potřeba instalovat.";
+"signin.open_browser" = "Otevřít claude.ai a přihlásit se";
+"signin.paste_caption" = "Po schválení zkopíruj zobrazený kód a vlož ho sem:";
+"signin.paste_placeholder" = "Vlož kód (CODE#STATE)";
+"signin.confirm" = "Přihlásit se";
+"signin.done" = "Hotovo";
+"signin.success" = "Přihlášen jako %@";
+"signin.error.malformed" = "Tohle nevypadá jako celý kód — zkopíruj celý řetězec.";
+"signin.error.state_mismatch" = "Kód nepatří k tomuto pokusu o přihlášení — začni znovu od kroku 1.";
+"signin.error.failed" = "Přihlášení se nezdařilo — zkus to znovu.";
+"signin.error.offline" = "Bez připojení — zkontroluj síť a zkus to znovu.";
+"signin.button" = "Přihlásit se přes Claude";
+"signin.claude_code_hint" = "Používáš Claude Code? Není potřeba nic nastavovat — UsageMeter si přihlášení najde sám.";
+"empty.not_logged_in.body" = "Na tomto Macu nejsou žádné Claude přihlašovací údaje.";
+"empty.signed_out.body" = "Došlo k odhlášení.";
+
+/* Account (Preferences) */
+"Account" = "Účet";
+"account.signed_in_as" = "Přihlášen jako";
+"account.sign_out" = "Odhlásit se";
+"account.sign_in" = "Přihlásit se…";
+"account.fallback_hint" = "Nepřihlášeno — použije se přihlášení Claude Code, pokud existuje.";
+
+/* Menu-bar display modes */
+"barmode.dot_5h" = "Tečka + 5h %";
+"barmode.5h" = "Jen 5h %";
+"barmode.5h_7d" = "5h % · týden %";
+"barmode.dot" = "Jen tečka";
+
+/* Preferences */
+"Menu bar" = "Lišta";
+"Format" = "Formát";
+"Per-model breakdown in menu" = "Rozpad po modelech v menu";
+"Refresh" = "Obnovování";
+"Interval" = "Interval";
+"Startup" = "Spuštění";
+"Launch at login" = "Spouštět při přihlášení";
+"Colour thresholds" = "Barevné prahy";
+"Green below" = "Zelená pod";
+"Orange below" = "Oranžová pod";
+"threshold.above_red" = "Nad %ld %% je červená.";
+"Updates" = "Aktualizace";
+"Check for updates automatically" = "Automaticky kontrolovat aktualizace";
+"About" = "O aplikaci";
+"Version" = "Verze";
+"GitHub" = "GitHub";
+
+/* Update check */
+"update.available" = "Nová verze %@ — stáhnout";
+
+/* Průvodce prvním spuštěním */
+"welcome.window_title" = "Vítej v UsageMeter";
+"welcome.title" = "Vítej v UsageMeter";
+"welcome.subtitle" = "Tři věci, které stačí vědět.";
+"welcome.step1.title" = "Najdeš mě v menu baru";
+"welcome.step1.body" = "UsageMeter žije v menu baru vpravo nahoře. Číslo ukazuje, kolik z aktuálního 5hodinového okna jsi vyčerpal; kliknutím zobrazíš týdenní okno, odpočty do resetu a rozpad podle modelů.";
+"welcome.step1.preview_caption" = "Teď zrovna ukazuje:";
+"welcome.step2.title" = "Připojení ke Claude";
+"welcome.step2.checking" = "Hledám přihlášení ke Claude na tomto Macu…";
+"welcome.step2.claude_code" = "Připojeno — používá se přihlášení Claude Code. Není potřeba nic nastavovat.";
+"welcome.step2.signed_in" = "Přihlášeno tvým Claude účtem.";
+"welcome.step2.needs_sign_in" = "Na tomto Macu není žádné přihlášení ke Claude. Přihlas se svým Claude účtem — zabere to minutu.";
+"welcome.step2.or_claude_code" = "Nebo nainstaluj Claude Code a spusť `claude` — UsageMeter si jeho přihlášení najde sám.";
+"welcome.retry" = "Zkusit znovu";
+"welcome.step3.title" = "Spouštění po přihlášení";
+"welcome.launch_at_login" = "Spouštět UsageMeter po přihlášení k Macu";
+"welcome.step3.body" = "Vše ostatní — formát v menu baru, interval obnovy, barevné prahy — najdeš v";
+"welcome.done" = "Hotovo";
+"welcome.show_again" = "Zobrazit průvodce…";
+
+/* Sekce Muse */
+"muse.window" = "Muse 5 h";
+"muse.weekly" = "Muse týden";
+"muse.not_logged_in" = "Muse: nepřihlášeno — spusť `muse login` v Terminálu";
+"muse.no_quota" = "Muse: připojeno, zatím bez dat kvóty";
+
+/* Ruční kontrola aktualizací */
+"update.check_now" = "Zkontrolovat teď";
+"update.up_to_date" = "Máš aktuální verzi (%@)";
+"update.check_failed" = "Kontrola se nezdařila — zkus to později";

@@ -1,0 +1,8 @@
+event: response.created
+data: {"id":"resp_1"}
+
+event: response.output_text.delta
+data: {"delta":"ok"}
+
+event: response.subscription_usage
+data: {"subscription":{"tier":"standard","weekly":{"resets_at":1789000000,"used_percent":34},"window":{"resets_at":"2026-09-20T12:00:00.000+00:00","used_percent":12,"window_duration_mins":300}}}
