@@ -16,13 +16,19 @@ struct BarLabel: View {
     let mode: BarDisplayMode
     let rules: ColorRules
 
+    /// Čtení vzhledu má dva účely: rendereru předáme správnou appearance (jinak
+    /// by pekl vždy světlou) a změna vzhledu automaticky překreslí label.
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         Image(nsImage: rendered)
             .renderingMode(.original)
     }
 
     @MainActor private var rendered: NSImage {
-        let renderer = ImageRenderer(content: LabelContent(usage: usage, error: error, muse: muse, showMuse: showMuse, mode: mode, rules: rules))
+        let content = LabelContent(usage: usage, error: error, muse: muse, showMuse: showMuse, mode: mode, rules: rules)
+            .environment(\.colorScheme, colorScheme)
+        let renderer = ImageRenderer(content: content)
         renderer.scale = NSScreen.main?.backingScaleFactor ?? 2
         guard let image = renderer.nsImage else { return NSImage(size: .zero) }
         image.isTemplate = false   // keep our colours instead of being tinted
@@ -79,7 +85,7 @@ private struct LabelContent: View {
                     Text(pct(fiveHour)).foregroundColor(fiveHourColor)
                 case .fiveAndSeven:
                     Text(pct(fiveHour)).foregroundColor(fiveHourColor)
-                        + Text(" · ").foregroundColor(.secondary)
+                        + Text(" · ").foregroundColor(.primary)
                         + Text(pct(sevenDay)).foregroundColor(weeklyColor)
                 case .dotAndFiveHour:
                     dot
@@ -87,7 +93,7 @@ private struct LabelContent: View {
                 }
             }
             if showMuse, let mpct = museFiveHour {
-                Text("·").foregroundColor(.secondary)
+                Text("·").foregroundColor(.primary)
                 Text("M\(pct(mpct))").foregroundColor(museColor)
             }
         }
