@@ -58,8 +58,10 @@ private struct LabelContent: View {
     /// The dot answers "is anything close to blocking me?", so it keeps the
     /// worst-across-all severity. The percentages answer "how full is *this*
     /// window?" and must only ever reflect their own limit.
+    /// Tečka identifikuje providera brand barvou (severity dál nesou procenta).
+    /// Při chybě pollu zešedne jako signál zastaralosti.
     private var dotColor: Color {
-        hasError ? .secondary : rules.color(percent: fiveHour ?? 0, severity: usage?.overallSeverity ?? .normal)
+        hasError ? .secondary : .claudeBrand
     }
     private var fiveHourColor: Color {
         hasError ? .secondary : rules.color(percent: fiveHour ?? 0, severity: usage?.sessionSeverity ?? .normal)
@@ -93,8 +95,8 @@ private struct LabelContent: View {
                 }
             }
             if showMuse, let mpct = museFiveHour {
-                Text("·").foregroundColor(.primary)
-                Text("M\(pct(mpct))").foregroundColor(museColor)
+                Circle().fill(Color.museBrand).frame(width: 7, height: 7)
+                Text(pct(mpct)).foregroundColor(museColor)
             }
         }
         .font(.system(size: 13, weight: .medium).monospacedDigit())
@@ -109,4 +111,12 @@ private struct LabelContent: View {
         guard let value else { return "–" }
         return "\(Int(value.rounded()))%"
     }
+}
+
+/// Brand barvy providerů pro tečky v menu baru.
+extension Color {
+    /// Claude oranžová (#D97757).
+    static let claudeBrand = Color(red: 0.851, green: 0.467, blue: 0.341)
+    /// Meta modrá (#0064E0).
+    static let museBrand = Color(red: 0.0, green: 0.392, blue: 0.878)
 }
