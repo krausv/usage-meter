@@ -9,10 +9,12 @@ import UsageMeterCore
 /// so it flips to "connected" by itself after a sign-in.
 struct WelcomeView: View {
     @EnvironmentObject var store: UsageStore
+    @EnvironmentObject var muse: PollingStore<MuseUsage>
     @EnvironmentObject var auth: AuthStore
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SettingsKey.barDisplayMode) private var barModeRaw = BarDisplayMode.dotAndFiveHour.rawValue
+    @AppStorage(SettingsKey.showMuseInBar) private var showMuseInBar = false
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin = true
 
     var body: some View {
@@ -64,6 +66,8 @@ struct WelcomeView: View {
                 BarLabel(
                     usage: store.usage,
                     error: store.lastError,
+                    muse: muse.value,
+                    showMuse: showMuseInBar,
                     mode: BarDisplayMode(rawValue: barModeRaw) ?? .dotAndFiveHour,
                     rules: UserDefaults.standard.colorRules
                 )

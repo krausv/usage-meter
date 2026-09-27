@@ -11,6 +11,8 @@ import UsageMeterCore
 struct BarLabel: View {
     let usage: Usage?
     let error: UsageErrorKind?
+    let muse: MuseUsage?
+    let showMuse: Bool
     let mode: BarDisplayMode
     let rules: ColorRules
 
@@ -20,7 +22,7 @@ struct BarLabel: View {
     }
 
     @MainActor private var rendered: NSImage {
-        let renderer = ImageRenderer(content: LabelContent(usage: usage, error: error, mode: mode, rules: rules))
+        let renderer = ImageRenderer(content: LabelContent(usage: usage, error: error, muse: muse, showMuse: showMuse, mode: mode, rules: rules))
         renderer.scale = NSScreen.main?.backingScaleFactor ?? 2
         guard let image = renderer.nsImage else { return NSImage(size: .zero) }
         image.isTemplate = false   // keep our colours instead of being tinted
@@ -33,6 +35,8 @@ struct BarLabel: View {
 private struct LabelContent: View {
     let usage: Usage?
     let error: UsageErrorKind?
+    let muse: MuseUsage?
+    let showMuse: Bool
     let mode: BarDisplayMode
     let rules: ColorRules
 
@@ -42,6 +46,9 @@ private struct LabelContent: View {
     private var needsSignIn: Bool { error == .notLoggedIn || error == .signedOut }
     private var fiveHour: Double? { usage?.fiveHour?.utilization }
     private var sevenDay: Double? { usage?.sevenDay?.utilization }
+    /// Muse 5h okno pro duální label. Záměrně jen window (ne weekly) — menu bar
+    /// má místo na jedno číslo; weekly je v panelu.
+    private var museFiveHour: Double? { muse?.window?.usedPercent }
     /// The dot answers "is anything close to blocking me?", so it keeps the
     /// worst-across-all severity. The percentages answer "how full is *this*
     /// window?" and must only ever reflect their own limit.
@@ -53,6 +60,9 @@ private struct LabelContent: View {
     }
     private var weeklyColor: Color {
         hasError ? .secondary : rules.color(percent: sevenDay ?? 0, severity: usage?.weeklySeverity ?? .normal)
+    }
+    private var museColor: Color {
+        rules.color(percent: museFiveHour ?? 0)
     }
 
     var body: some View {
@@ -75,6 +85,10 @@ private struct LabelContent: View {
                     dot
                     Text(pct(fiveHour)).foregroundColor(fiveHourColor)
                 }
+            }
+            if showMuse, let mpct = museFiveHour {
+                Text("·").foregroundColor(.secondary)
+                Text("M\(pct(mpct))").foregroundColor(museColor)
             }
         }
         .font(.system(size: 13, weight: .medium).monospacedDigit())

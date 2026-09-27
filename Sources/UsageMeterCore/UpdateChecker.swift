@@ -51,7 +51,7 @@ public struct ReleaseInfo: Equatable, Sendable {
 /// returns nil — an update check must never interfere with the app's function.
 public struct UpdateChecker: Sendable {
     public static let latestReleaseURL =
-        URL(string: "https://api.github.com/repos/usagemeter-sro/UsageMeter/releases/latest")!
+        URL(string: "https://api.github.com/repos/krausv/usage-meter/releases/latest")!
 
     private let fetchData: @Sendable () async throws -> Data
 

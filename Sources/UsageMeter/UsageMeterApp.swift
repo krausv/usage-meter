@@ -68,6 +68,7 @@ struct UsageMeterApp: App {
     @StateObject private var store = AppEnvironment.store
     @StateObject private var museStore = AppEnvironment.museStore
     @AppStorage(SettingsKey.barDisplayMode) private var barModeRaw = BarDisplayMode.dotAndFiveHour.rawValue
+    @AppStorage(SettingsKey.showMuseInBar) private var showMuseInBar = false
 
     var body: some Scene {
         MenuBarExtra {
@@ -79,6 +80,8 @@ struct UsageMeterApp: App {
             BarLabel(
                 usage: store.usage,
                 error: store.lastError,
+                muse: museStore.value,
+                showMuse: showMuseInBar,
                 mode: BarDisplayMode(rawValue: barModeRaw) ?? .dotAndFiveHour,
                 rules: UserDefaults.standard.colorRules
             )
@@ -106,6 +109,7 @@ struct UsageMeterApp: App {
         Window("welcome.window_title", id: "welcome") {
             WelcomeView()
                 .environmentObject(store)
+                .environmentObject(museStore)
                 .environmentObject(AppEnvironment.auth)
         }
         .windowResizability(.contentSize)

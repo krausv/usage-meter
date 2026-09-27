@@ -23,6 +23,7 @@ enum BarDisplayMode: String, CaseIterable, Identifiable {
 /// in the views; this enum is the single source of truth for key names + defaults.
 enum SettingsKey {
     static let barDisplayMode = "barDisplayMode"
+    static let showMuseInBar = "showMuseInBar"
     static let refreshInterval = "refreshInterval"
     static let showPerModel = "showPerModel"
     static let launchAtLogin = "launchAtLogin"
@@ -35,6 +36,7 @@ enum SettingsKey {
     static func registerDefaults() {
         UserDefaults.standard.register(defaults: [
             barDisplayMode: BarDisplayMode.dotAndFiveHour.rawValue,
+            showMuseInBar: false,
             refreshInterval: 60.0,
             showPerModel: false,
             launchAtLogin: true,

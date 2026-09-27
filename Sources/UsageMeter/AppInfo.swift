@@ -19,7 +19,7 @@ enum AppInfo {
     }
 
     /// Public source repository.
-    static let repoURL = URL(string: "https://github.com/usagemeter-sro/UsageMeter")!
+    static let repoURL = URL(string: "https://github.com/krausv/usage-meter")!
 }
 
 enum Localized {

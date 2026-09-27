@@ -38,7 +38,7 @@ final class UpdateCheckerTests: XCTestCase {
         let release = try UpdateChecker.decode(fixtureData())
         XCTAssertEqual(release.tagName, "v1.0.5")
         XCTAssertEqual(release.version, AppVersion("1.0.5"))
-        XCTAssertEqual(release.url.absoluteString, "https://github.com/usagemeter-sro/UsageMeter/releases/tag/v1.0.5")
+        XCTAssertEqual(release.url.absoluteString, "https://github.com/krausv/usage-meter/releases/tag/v1.0.5")
     }
 
     func testDecodeThrowsOnGarbage() {
