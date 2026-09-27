@@ -18,84 +18,88 @@ struct PreferencesView: View {
 
     private let intervals: [(String, Double)] = [("30 s", 30), ("60 s", 60), ("5 min", 300)]
 
+    /// Výška je shora omezená a obsah scrolluje — Form s plnou výškou se na
+    /// menších displejích (MacBook Air) nevešel na obrazovku.
     var body: some View {
-        Form {
-            Section("Menu bar") {
-                Picker("Format", selection: $barModeRaw) {
-                    ForEach(BarDisplayMode.allCases) { mode in
-                        Text(mode.label).tag(mode.rawValue)
-                    }
-                }
-                Toggle("Per-model breakdown in menu", isOn: $showPerModel)
-                Toggle("Show Muse in menu bar", isOn: $showMuseInBar)
-            }
-
-            Section("Refresh") {
-                Picker("Interval", selection: $refreshInterval) {
-                    ForEach(intervals, id: \.1) { Text($0.0).tag($0.1) }
-                }
-                .onChange(of: refreshInterval) { store.setInterval($0) }
-            }
-
-            Section("Startup") {
-                Toggle("Launch at login", isOn: $launchAtLogin)
-                    .onChange(of: launchAtLogin) { LoginItem.setEnabled($0) }
-            }
-
-            Section("Colour thresholds") {
-                Stepper(value: $greenMax, in: 10...orangeMax, step: 5) {
-                    LabeledContent("Green below", value: "\(Int(greenMax)) %")
-                }
-                Stepper(value: $orangeMax, in: greenMax...100, step: 5) {
-                    LabeledContent("Orange below", value: "\(Int(orangeMax)) %")
-                }
-                Text(Localized.string("threshold.above_red", Int(orangeMax)))
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-
-            Section("Updates") {
-                Toggle("Check for updates automatically", isOn: $checkForUpdates)
-                HStack {
-                    Button("update.check_now") {
-                        Task { await updates.checkNow() }
-                    }
-                    .disabled(updates.manualStatus == .checking)
-                    Spacer()
-                    manualCheckStatus
-                }
-            }
-
-            Section("Account") {
-                if let email = auth.accountEmail {
-                    LabeledContent("account.signed_in_as", value: email.isEmpty ? "—" : email)
-                    Button("account.sign_out") {
-                        Task {
-                            await auth.signOut()
-                            await store.refreshNow()
+        ScrollView {
+            Form {
+                Section("Menu bar") {
+                    Picker("Format", selection: $barModeRaw) {
+                        ForEach(BarDisplayMode.allCases) { mode in
+                            Text(mode.label).tag(mode.rawValue)
                         }
                     }
-                } else {
-                    Text("account.fallback_hint")
+                    Toggle("Per-model breakdown in menu", isOn: $showPerModel)
+                    Toggle("Show Muse in menu bar", isOn: $showMuseInBar)
+                }
+
+                Section("Refresh") {
+                    Picker("Interval", selection: $refreshInterval) {
+                        ForEach(intervals, id: \.1) { Text($0.0).tag($0.1) }
+                    }
+                    .onChange(of: refreshInterval) { store.setInterval($0) }
+                }
+
+                Section("Startup") {
+                    Toggle("Launch at login", isOn: $launchAtLogin)
+                        .onChange(of: launchAtLogin) { LoginItem.setEnabled($0) }
+                }
+
+                Section("Colour thresholds") {
+                    Stepper(value: $greenMax, in: 10...orangeMax, step: 5) {
+                        LabeledContent("Green below", value: "\(Int(greenMax)) %")
+                    }
+                    Stepper(value: $orangeMax, in: greenMax...100, step: 5) {
+                        LabeledContent("Orange below", value: "\(Int(orangeMax)) %")
+                    }
+                    Text(Localized.string("threshold.above_red", Int(orangeMax)))
                         .font(.caption).foregroundStyle(.secondary)
-                    Button("account.sign_in") {
-                        openWindow(id: "signin")
+                }
+
+                Section("Updates") {
+                    Toggle("Check for updates automatically", isOn: $checkForUpdates)
+                    HStack {
+                        Button("update.check_now") {
+                            Task { await updates.checkNow() }
+                        }
+                        .disabled(updates.manualStatus == .checking)
+                        Spacer()
+                        manualCheckStatus
+                    }
+                }
+
+                Section("Account") {
+                    if let email = auth.accountEmail {
+                        LabeledContent("account.signed_in_as", value: email.isEmpty ? "—" : email)
+                        Button("account.sign_out") {
+                            Task {
+                                await auth.signOut()
+                                await store.refreshNow()
+                            }
+                        }
+                    } else {
+                        Text("account.fallback_hint")
+                            .font(.caption).foregroundStyle(.secondary)
+                        Button("account.sign_in") {
+                            openWindow(id: "signin")
+                            NSApp.activate(ignoringOtherApps: true)
+                        }
+                    }
+                }
+
+                Section("About") {
+                    LabeledContent("Version", value: AppInfo.versionString)
+                    Link("GitHub", destination: AppInfo.repoURL)
+                    Button("welcome.show_again") {
+                        openWindow(id: "welcome")
                         NSApp.activate(ignoringOtherApps: true)
                     }
                 }
             }
-
-            Section("About") {
-                LabeledContent("Version", value: AppInfo.versionString)
-                Link("GitHub", destination: AppInfo.repoURL)
-                Button("welcome.show_again") {
-                    openWindow(id: "welcome")
-                    NSApp.activate(ignoringOtherApps: true)
-                }
-            }
+            .formStyle(.grouped)
         }
-        .formStyle(.grouped)
         .frame(width: 360)
-        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxHeight: 600)
         .onAppear {
             // Reconcile the toggle with the actual system state on open.
             launchAtLogin = LoginItem.isEnabled
