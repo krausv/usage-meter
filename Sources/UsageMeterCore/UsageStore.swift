@@ -96,8 +96,11 @@ public final class PollingStore<Snapshot>: ObservableObject {
 
     private func scheduleNext(after delay: TimeInterval) {
         timer?.invalidate()
-        let t = Timer(timeInterval: delay, repeats: false) { [weak self] _ in
-            Task { @MainActor in await self?.refreshNow() }
+        let t = Timer(timeInterval: delay, repeats: false) { _ in
+            // `weak self` patří přímo na Task: slabý odkaz zachycený vnější
+            // closurou by Task (concurrently-executing) nesměl číst — na to
+            // si starší toolchain na CI stěžuje, novější to přejde mlčky.
+            Task { @MainActor [weak self] in await self?.refreshNow() }
         }
         RunLoop.main.add(t, forMode: .common)
         timer = t
