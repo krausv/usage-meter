@@ -11,11 +11,12 @@
 #   3. auto-detect the single "Developer ID Application" in your keychain
 #   4. fall back to ad-hoc ("-") — DMG will NOT pass Gatekeeper on other Macs
 #
-# Notarization (optional, needs an Apple ID):
-#   First store credentials once:
-#     xcrun notarytool store-credentials claude-usage \
-#       --apple-id you@example.com --team-id TEAMID --password <app-specific-pw>
-#   Then pass:  --notarize claude-usage
+# Notarization (optional, needs an Apple ID), two ways:
+#   a) environment: NOTARY_APPLE_ID / NOTARY_TEAM_ID / NOTARY_PASSWORD
+#      (preferred on CI — avoids `store-credentials`, which crashes with
+#      Trace/BPT trap on some runners), or
+#   b) stored profile:  xcrun notarytool store-credentials <profile> [...]
+#      then pass:  --notarize <profile>
 #
 set -euo pipefail
 
@@ -81,7 +82,17 @@ if [[ "$IDENTITY" != "-" ]]; then
 fi
 
 # --- optional notarization ----------------------------------------------------
-if [[ -n "$NOTARY_PROFILE" ]]; then
+if [[ -n "${NOTARY_APPLE_ID:-}" && -n "${NOTARY_TEAM_ID:-}" && -n "${NOTARY_PASSWORD:-}" ]]; then
+    echo "› notarizing (direct credentials) — this can take a few minutes"
+    xcrun notarytool submit "$DMG" \
+        --apple-id "$NOTARY_APPLE_ID" \
+        --team-id "$NOTARY_TEAM_ID" \
+        --password "$NOTARY_PASSWORD" \
+        --wait
+    echo "› stapling ticket"
+    xcrun stapler staple "$DMG"
+    xcrun stapler validate "$DMG"
+elif [[ -n "$NOTARY_PROFILE" ]]; then
     echo "› notarizing (profile: $NOTARY_PROFILE) — this can take a few minutes"
     xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
     echo "› stapling ticket"

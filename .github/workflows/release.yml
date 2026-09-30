@@ -60,21 +60,13 @@ jobs:
           security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
           rm -f "$RUNNER_TEMP/cert.p12"
 
-      - name: Store notarization credentials
+      - name: Build, sign and notarize DMG
         if: steps.check.outputs.ready == 'true'
         env:
           NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
           NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
           NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
-        run: |
-          xcrun notarytool store-credentials ci \
-            --apple-id "$NOTARY_APPLE_ID" \
-            --team-id "$NOTARY_TEAM_ID" \
-            --password "$NOTARY_PASSWORD"
-
-      - name: Build, sign and notarize DMG
-        if: steps.check.outputs.ready == 'true'
-        run: ./scripts/make-dmg.sh --notarize ci
+        run: ./scripts/make-dmg.sh
 
       - name: Attach DMG to the release
         if: steps.check.outputs.ready == 'true'
