@@ -47,7 +47,7 @@ final class MuseUsageTests: XCTestCase {
         XCTAssertThrowsError(try MuseKeychain.parse(Data(#"{"api_key": ""}"#.utf8)))
     }
 
-    func testProbeRequestShape() {
+    func testProbeRequestShape() throws {
         let req = MuseUsageClient.probeRequest(apiKey: "LLM|test")
         XCTAssertEqual(req.httpMethod, "POST")
         XCTAssertEqual(req.value(forHTTPHeaderField: "Authorization"), "Bearer LLM|test")

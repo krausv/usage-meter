@@ -15,10 +15,10 @@ final class CodexUsageTests: XCTestCase {
         XCTAssertEqual(usage.primary?.usedPercent, 6)
         XCTAssertEqual(usage.secondary?.usedPercent, 28)
         XCTAssertNotNil(usage.primary?.resetsAt, "epoch reset_at must parse")
+        // Celé epoch sekundy jsou v Double přesné, takže jde porovnat exaktně.
         XCTAssertEqual(
-            usage.primary?.resetsAt,
-            Date(timeIntervalSince1970: 1781121633),
-            accuracy: 1
+            try XCTUnwrap(usage.primary?.resetsAt),
+            Date(timeIntervalSince1970: 1781121633)
         )
     }
 
