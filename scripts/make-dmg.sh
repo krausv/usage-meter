@@ -42,8 +42,10 @@ done
 
 # --- resolve signing identity -------------------------------------------------
 if [[ -z "$IDENTITY" ]]; then
+    # `|| true`: s pipefail by nenalezená identita (grep exit 1) zabila celý
+    # script ještě před warningem — místo toho spadneme na ad-hoc větev níže.
     found="$(security find-identity -v -p codesigning 2>/dev/null \
-             | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)".*/\1/')"
+             | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)".*/\1/' || true)"
     if [[ -n "$found" ]]; then
         IDENTITY="$found"
         echo "› auto-detected identity: $IDENTITY"

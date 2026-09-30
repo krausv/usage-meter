@@ -59,6 +59,11 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k "$KP" "$KEYCHAIN"
           security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
           rm -f "$RUNNER_TEMP/cert.p12"
+          # Hlasitý fail, když .p12 neobsahuje distribuční identitu —
+          # jinak by build tiše spadl na ad-hoc a notarizace by chytla až později.
+          security find-identity -v -p codesigning "$KEYCHAIN" | tee /dev/stderr \
+            | grep -q "Developer ID Application" \
+            || { echo "::error::Imported certificate has no 'Developer ID Application' identity. Export the Developer ID .p12 (Keychain Access → My Certificates), not Apple Development."; exit 1; }
 
       - name: Build, sign and notarize DMG
         if: steps.check.outputs.ready == 'true'
