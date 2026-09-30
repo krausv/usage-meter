@@ -103,4 +103,9 @@ elif [[ -n "$NOTARY_PROFILE" ]]; then
 fi
 
 echo "✓ built $DMG"
-[[ "$IDENTITY" == "-" ]] && echo "  (ad-hoc — for a shareable build, sign with a Developer ID and notarize)"
+# Pozor: podmínka nesmí být posledním příkazem scriptu — s `set -e` by
+# nesplněný `[[ … ]] && echo` (reálná identita) vrátil exit 1 i při úspěchu.
+if [[ "$IDENTITY" == "-" ]]; then
+    echo "  (ad-hoc — for a shareable build, sign with a Developer ID and notarize)"
+fi
+true
