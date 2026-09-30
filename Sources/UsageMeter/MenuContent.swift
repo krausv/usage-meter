@@ -39,6 +39,7 @@ struct UsageBar: View {
 struct MenuContent: View {
     @EnvironmentObject var store: UsageStore
     @EnvironmentObject var muse: PollingStore<MuseUsage>
+    @EnvironmentObject var codex: PollingStore<CodexUsage>
     @EnvironmentObject var updates: UpdateStore
     @Environment(\.openWindow) private var openWindow
     @AppStorage(SettingsKey.showPerModel) private var showPerModel = false
@@ -83,6 +84,9 @@ struct MenuContent: View {
             Divider()
             museSection
 
+            Divider()
+            codexSection
+
             if let release = updates.available {
                 Divider()
                 Button {
@@ -106,10 +110,12 @@ struct MenuContent: View {
             // Opening the panel always tries to bring data up to date (and
             // recovers immediately if a transient error is showing).
             // Muse se obnovuje jen když jsou data starší než 4 minuty —
-            // každý jeho poll je placený API call.
+            // každý jeho poll je placený API call. Codex poll nic nestojí,
+            // ale stejný práh šetří server.
             Task {
                 await store.refreshIfStale()
                 await muse.refreshIfStale(240)
+                await codex.refreshIfStale(240)
             }
         }
     }
@@ -150,6 +156,7 @@ struct MenuContent: View {
             Button { Task {
                 await store.refreshNow()
                 await muse.refreshNow()
+                await codex.refreshNow()
             } } label: {
                 Image(systemName: "arrow.clockwise")
             }
@@ -220,6 +227,56 @@ struct MenuContent: View {
             }
             if m.window == nil && m.weekly == nil {
                 Text("muse.no_quota")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    /// Codex sekce: stejný vzor jako Muse (login se dělá v terminálu přes
+    /// `codex login`, ne v appce). Primary je typicky 5h okno, secondary týden.
+    private var codexSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let c = codex.value {
+                codexWindows(c)
+                if let err = codex.lastError {
+                    Text(Localized.error(err))
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            } else if codex.isLoading {
+                Text("Loading…").foregroundStyle(.secondary).font(.system(size: 12))
+            } else if let err = codex.lastError {
+                Text(err == .notLoggedIn ? Localized.string("codex.not_logged_in") : Localized.error(err))
+                    .font(.system(size: 11))
+                    .foregroundStyle(err == .notLoggedIn ? Color.secondary : Color.red)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private func codexWindows(_ c: CodexUsage) -> some View {
+        VStack(spacing: 12) {
+            if let w = c.primary {
+                UsageBar(
+                    title: Localized.string("codex.primary"),
+                    percent: w.usedPercent,
+                    resetsAt: w.resetsAt,
+                    color: rules.color(percent: w.usedPercent)
+                )
+            }
+            if let week = c.secondary {
+                UsageBar(
+                    title: Localized.string("codex.secondary"),
+                    percent: week.usedPercent,
+                    resetsAt: week.resetsAt,
+                    color: rules.color(percent: week.usedPercent)
+                )
+            }
+            if c.primary == nil && c.secondary == nil {
+                Text("codex.no_quota")
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)

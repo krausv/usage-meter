@@ -13,6 +13,8 @@ struct BarLabel: View {
     let error: UsageErrorKind?
     let muse: MuseUsage?
     let showMuse: Bool
+    let codex: CodexUsage?
+    let showCodex: Bool
     let mode: BarDisplayMode
     let rules: ColorRules
 
@@ -26,7 +28,7 @@ struct BarLabel: View {
     }
 
     @MainActor private var rendered: NSImage {
-        let content = LabelContent(usage: usage, error: error, muse: muse, showMuse: showMuse, mode: mode, rules: rules)
+        let content = LabelContent(usage: usage, error: error, muse: muse, showMuse: showMuse, codex: codex, showCodex: showCodex, mode: mode, rules: rules)
             .environment(\.colorScheme, colorScheme)
         let renderer = ImageRenderer(content: content)
         renderer.scale = NSScreen.main?.backingScaleFactor ?? 2
@@ -43,6 +45,8 @@ private struct LabelContent: View {
     let error: UsageErrorKind?
     let muse: MuseUsage?
     let showMuse: Bool
+    let codex: CodexUsage?
+    let showCodex: Bool
     let mode: BarDisplayMode
     let rules: ColorRules
 
@@ -55,6 +59,8 @@ private struct LabelContent: View {
     /// Muse 5h okno pro duální label. Záměrně jen window (ne weekly) — menu bar
     /// má místo na jedno číslo; weekly je v panelu.
     private var museFiveHour: Double? { muse?.window?.usedPercent }
+    /// Codex primary okno (typicky 5h) — stejný důvod.
+    private var codexPrimary: Double? { codex?.primary?.usedPercent }
     /// The dot answers "is anything close to blocking me?", so it keeps the
     /// worst-across-all severity. The percentages answer "how full is *this*
     /// window?" and must only ever reflect their own limit.
@@ -71,6 +77,9 @@ private struct LabelContent: View {
     }
     private var museColor: Color {
         rules.color(percent: museFiveHour ?? 0)
+    }
+    private var codexColor: Color {
+        rules.color(percent: codexPrimary ?? 0)
     }
 
     var body: some View {
@@ -98,6 +107,10 @@ private struct LabelContent: View {
                 Circle().fill(Color.museBrand).frame(width: 7, height: 7)
                 Text(pct(mpct)).foregroundColor(museColor)
             }
+            if showCodex, let cpct = codexPrimary {
+                Circle().fill(Color.codexBrand).frame(width: 7, height: 7)
+                Text(pct(cpct)).foregroundColor(codexColor)
+            }
         }
         .font(.system(size: 13, weight: .medium).monospacedDigit())
         .padding(.vertical, 1)
@@ -119,4 +132,6 @@ extension Color {
     static let claudeBrand = Color(red: 0.851, green: 0.467, blue: 0.341)
     /// Meta modrá (#0064E0).
     static let museBrand = Color(red: 0.0, green: 0.392, blue: 0.878)
+    /// ChatGPT zelená (#10A37C).
+    static let codexBrand = Color(red: 0.063, green: 0.639, blue: 0.486)
 }

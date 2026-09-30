@@ -65,6 +65,7 @@
 "Format" = "Format";
 "Per-model breakdown in menu" = "Per-model breakdown in menu";
 "Show Muse in menu bar" = "Show Muse in menu bar";
+"Show Codex in menu bar" = "Show Codex in menu bar";
 "Refresh" = "Refresh";
 "Interval" = "Interval";
 "Startup" = "Startup";
@@ -107,6 +108,12 @@
 "muse.weekly" = "Muse weekly";
 "muse.not_logged_in" = "Muse: not logged in — run `muse login` in Terminal";
 "muse.no_quota" = "Muse: connected, no quota data yet";
+
+/* Codex section */
+"codex.primary" = "Codex 5h";
+"codex.secondary" = "Codex weekly";
+"codex.not_logged_in" = "Codex: not logged in — run `codex login` in Terminal";
+"codex.no_quota" = "Codex: connected, no quota data yet";
 
 /* Manual update check */
 "update.check_now" = "Check now";

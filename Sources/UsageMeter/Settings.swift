@@ -24,6 +24,7 @@ enum BarDisplayMode: String, CaseIterable, Identifiable {
 enum SettingsKey {
     static let barDisplayMode = "barDisplayMode"
     static let showMuseInBar = "showMuseInBar"
+    static let showCodexInBar = "showCodexInBar"
     static let refreshInterval = "refreshInterval"
     static let showPerModel = "showPerModel"
     static let launchAtLogin = "launchAtLogin"
@@ -37,6 +38,7 @@ enum SettingsKey {
         UserDefaults.standard.register(defaults: [
             barDisplayMode: BarDisplayMode.dotAndFiveHour.rawValue,
             showMuseInBar: false,
+            showCodexInBar: false,
             refreshInterval: 60.0,
             showPerModel: false,
             launchAtLogin: true,

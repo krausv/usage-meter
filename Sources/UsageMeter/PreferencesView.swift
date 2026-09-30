@@ -9,6 +9,7 @@ struct PreferencesView: View {
 
     @AppStorage(SettingsKey.barDisplayMode) private var barModeRaw = BarDisplayMode.dotAndFiveHour.rawValue
     @AppStorage(SettingsKey.showMuseInBar) private var showMuseInBar = false
+    @AppStorage(SettingsKey.showCodexInBar) private var showCodexInBar = false
     @AppStorage(SettingsKey.refreshInterval) private var refreshInterval = 60.0
     @AppStorage(SettingsKey.showPerModel) private var showPerModel = false
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin = true
@@ -31,6 +32,7 @@ struct PreferencesView: View {
                     }
                     Toggle("Per-model breakdown in menu", isOn: $showPerModel)
                     Toggle("Show Muse in menu bar", isOn: $showMuseInBar)
+                Toggle("Show Codex in menu bar", isOn: $showCodexInBar)
                 }
 
                 Section("Refresh") {

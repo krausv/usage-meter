@@ -24,6 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Fail fast on broken code: the macos runner ships Xcode, so the full
+      # XCTest suite (including fixtures) runs here — unlike CLT-only Macs.
+      - name: Run unit tests
+        run: swift test
+
       # Skip cleanly (green run, not a red X) if signing secrets aren't set yet.
       - name: Check signing secrets
         id: check

@@ -23,6 +23,11 @@ enum AppEnvironment {
         PollingStore(client: MuseUsageClient(), interval: 5 * 60)
     }()
 
+    /// Codex poll nic nestojí (status endpoint), 5 minut je slušnost k serveru.
+    static let codexStore: PollingStore<CodexUsage> = {
+        PollingStore(client: CodexUsageClient(), interval: 5 * 60)
+    }()
+
     static let updates = UpdateStore()
     static let auth = AuthStore(oauth: oauthProvider)
 }
@@ -52,11 +57,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             Task { @MainActor in
                 await AppEnvironment.store.refreshNow()
                 await AppEnvironment.museStore.refreshIfStale(60)
+                await AppEnvironment.codexStore.refreshIfStale(60)
             }
         }
 
         AppEnvironment.store.start()
         AppEnvironment.museStore.start()
+        AppEnvironment.codexStore.start()
         AppEnvironment.updates.start()
         Task { @MainActor in await AppEnvironment.auth.loadCurrentAccount() }
     }
@@ -67,14 +74,17 @@ struct UsageMeterApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @StateObject private var store = AppEnvironment.store
     @StateObject private var museStore = AppEnvironment.museStore
+    @StateObject private var codexStore = AppEnvironment.codexStore
     @AppStorage(SettingsKey.barDisplayMode) private var barModeRaw = BarDisplayMode.dotAndFiveHour.rawValue
     @AppStorage(SettingsKey.showMuseInBar) private var showMuseInBar = false
+    @AppStorage(SettingsKey.showCodexInBar) private var showCodexInBar = false
 
     var body: some Scene {
         MenuBarExtra {
             MenuContent()
                 .environmentObject(store)
                 .environmentObject(museStore)
+                .environmentObject(codexStore)
                 .environmentObject(AppEnvironment.updates)
         } label: {
             BarLabel(
@@ -82,6 +92,8 @@ struct UsageMeterApp: App {
                 error: store.lastError,
                 muse: museStore.value,
                 showMuse: showMuseInBar,
+                codex: codexStore.value,
+                showCodex: showCodexInBar,
                 mode: BarDisplayMode(rawValue: barModeRaw) ?? .dotAndFiveHour,
                 rules: UserDefaults.standard.colorRules
             )
@@ -110,6 +122,7 @@ struct UsageMeterApp: App {
             WelcomeView()
                 .environmentObject(store)
                 .environmentObject(museStore)
+                .environmentObject(codexStore)
                 .environmentObject(AppEnvironment.auth)
         }
         .windowResizability(.contentSize)

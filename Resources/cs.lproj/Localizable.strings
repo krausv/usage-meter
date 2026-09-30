@@ -65,6 +65,7 @@
 "Format" = "Formát";
 "Per-model breakdown in menu" = "Rozpad po modelech v menu";
 "Show Muse in menu bar" = "Zobrazit Muse v menu baru";
+"Show Codex in menu bar" = "Zobrazit Codex v menu baru";
 "Refresh" = "Obnovování";
 "Interval" = "Interval";
 "Startup" = "Spuštění";
@@ -107,6 +108,12 @@
 "muse.weekly" = "Muse týden";
 "muse.not_logged_in" = "Muse: nepřihlášeno — spusť `muse login` v Terminálu";
 "muse.no_quota" = "Muse: připojeno, zatím bez dat kvóty";
+
+/* Sekce Codex */
+"codex.primary" = "Codex 5 h";
+"codex.secondary" = "Codex týden";
+"codex.not_logged_in" = "Codex: nepřihlášeno — spusť `codex login` v Terminálu";
+"codex.no_quota" = "Codex: připojeno, zatím bez dat kvóty";
 
 /* Ruční kontrola aktualizací */
 "update.check_now" = "Zkontrolovat teď";

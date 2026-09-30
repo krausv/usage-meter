@@ -10,11 +10,13 @@ import UsageMeterCore
 struct WelcomeView: View {
     @EnvironmentObject var store: UsageStore
     @EnvironmentObject var muse: PollingStore<MuseUsage>
+    @EnvironmentObject var codex: PollingStore<CodexUsage>
     @EnvironmentObject var auth: AuthStore
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) private var dismiss
     @AppStorage(SettingsKey.barDisplayMode) private var barModeRaw = BarDisplayMode.dotAndFiveHour.rawValue
     @AppStorage(SettingsKey.showMuseInBar) private var showMuseInBar = false
+    @AppStorage(SettingsKey.showCodexInBar) private var showCodexInBar = false
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin = true
 
     var body: some View {
@@ -68,6 +70,8 @@ struct WelcomeView: View {
                     error: store.lastError,
                     muse: muse.value,
                     showMuse: showMuseInBar,
+                    codex: codex.value,
+                    showCodex: showCodexInBar,
                     mode: BarDisplayMode(rawValue: barModeRaw) ?? .dotAndFiveHour,
                     rules: UserDefaults.standard.colorRules
                 )
