@@ -31,8 +31,8 @@ struct PreferencesView: View {
                         }
                     }
                     Toggle("Per-model breakdown in menu", isOn: $showPerModel)
-                    Toggle("Show Muse in menu bar", isOn: $showMuseInBar)
-                Toggle("Show Codex in menu bar", isOn: $showCodexInBar)
+                    Toggle("Show Muse", isOn: $showMuseInBar)
+                    Toggle("Show Codex", isOn: $showCodexInBar)
                 }
 
                 Section("Refresh") {

@@ -43,6 +43,14 @@ public final class PollingStore<Snapshot>: ObservableObject {
         Task { await refreshNow() }
     }
 
+    /// Zastaví polling (timer i případné naplánované pokusy). Po `start()` se
+    /// znovu rozjede. Rozběhnutý fetch doběhne, ale už nic nenaplánuje.
+    public func stop() {
+        started = false
+        timer?.invalidate()
+        timer = nil
+    }
+
     /// Change the poll cadence at runtime (from Preferences). Takes effect on the
     /// next scheduled poll; also reschedules the pending one.
     public func setInterval(_ seconds: TimeInterval) {
@@ -96,6 +104,8 @@ public final class PollingStore<Snapshot>: ObservableObject {
 
     private func scheduleNext(after delay: TimeInterval) {
         timer?.invalidate()
+        timer = nil
+        guard started else { return }
         let t = Timer(timeInterval: delay, repeats: false) { _ in
             // `weak self` patří přímo na Task: slabý odkaz zachycený vnější
             // closurou by Task (concurrently-executing) nesměl číst — na to

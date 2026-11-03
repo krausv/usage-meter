@@ -56,14 +56,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         ) { _ in
             Task { @MainActor in
                 await AppEnvironment.store.refreshNow()
-                await AppEnvironment.museStore.refreshIfStale(60)
-                await AppEnvironment.codexStore.refreshIfStale(60)
+                let defaults = UserDefaults.standard
+                if defaults.bool(forKey: SettingsKey.showMuseInBar) {
+                    await AppEnvironment.museStore.refreshIfStale(60)
+                }
+                if defaults.bool(forKey: SettingsKey.showCodexInBar) {
+                    await AppEnvironment.codexStore.refreshIfStale(60)
+                }
             }
         }
 
         AppEnvironment.store.start()
-        AppEnvironment.museStore.start()
-        AppEnvironment.codexStore.start()
+        let defaults = UserDefaults.standard
+        if defaults.bool(forKey: SettingsKey.showMuseInBar) { AppEnvironment.museStore.start() }
+        if defaults.bool(forKey: SettingsKey.showCodexInBar) { AppEnvironment.codexStore.start() }
         AppEnvironment.updates.start()
         Task { @MainActor in await AppEnvironment.auth.loadCurrentAccount() }
     }
@@ -98,6 +104,14 @@ struct UsageMeterApp: App {
                 rules: UserDefaults.standard.colorRules
             )
             .modifier(FirstLaunchWelcome())
+            // Label existuje vždy (i při zavřeném popoveru), takže je to
+            // spolehlivé místo pro reakci na přepnutí v Předvolbách.
+            .onChange(of: showMuseInBar) { on in
+                if on { museStore.start() } else { museStore.stop() }
+            }
+            .onChange(of: showCodexInBar) { on in
+                if on { codexStore.start() } else { codexStore.stop() }
+            }
         }
         .menuBarExtraStyle(.window)
 

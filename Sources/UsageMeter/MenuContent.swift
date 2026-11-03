@@ -43,6 +43,8 @@ struct MenuContent: View {
     @EnvironmentObject var updates: UpdateStore
     @Environment(\.openWindow) private var openWindow
     @AppStorage(SettingsKey.showPerModel) private var showPerModel = false
+    @AppStorage(SettingsKey.showMuseInBar) private var showMuse = false
+    @AppStorage(SettingsKey.showCodexInBar) private var showCodex = false
 
     private var rules: ColorRules { UserDefaults.standard.colorRules }
 
@@ -81,11 +83,15 @@ struct MenuContent: View {
                 }
             }
 
-            Divider()
-            museSection
+            if showMuse {
+                Divider()
+                museSection
+            }
 
-            Divider()
-            codexSection
+            if showCodex {
+                Divider()
+                codexSection
+            }
 
             if let release = updates.available {
                 Divider()
@@ -114,8 +120,8 @@ struct MenuContent: View {
             // ale stejný práh šetří server.
             Task {
                 await store.refreshIfStale()
-                await muse.refreshIfStale(240)
-                await codex.refreshIfStale(240)
+                if showMuse { await muse.refreshIfStale(240) }
+                if showCodex { await codex.refreshIfStale(240) }
             }
         }
     }
