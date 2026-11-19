@@ -12,9 +12,10 @@ enum AppEnvironment {
 
     static let store: UsageStore = {
         SettingsKey.registerDefaults()
-        let interval = UserDefaults.standard.double(forKey: SettingsKey.refreshInterval)
+        let storedInterval = UserDefaults.standard.double(forKey: SettingsKey.refreshInterval)
+        let interval = RefreshInterval(preferenceValue: storedInterval)
         let client = UsageClient(provider: AutoCredentialProvider(oauth: oauthProvider))
-        return UsageStore(client: client, interval: interval > 0 ? interval : 60)
+        return UsageStore(client: client, interval: interval.rawValue)
     }()
 
     /// Muse má vlastní store se záměrně řidším intervalem: každý Muse poll je
@@ -34,21 +35,10 @@ enum AppEnvironment {
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    /// Held for the app's lifetime to opt out of App Nap, which would otherwise
-    /// suspend our poll timer while the menu-bar agent looks idle — leaving a
-    /// transient error on screen indefinitely. `...AllowingIdleSystemSleep` still
-    /// lets the Mac sleep normally to save power.
-    private var activity: NSObjectProtocol?
-
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Menu-bar-only agent: no Dock icon (also covered by LSUIElement in the
         // bundle, but set here so `swift run` behaves the same).
         NSApp.setActivationPolicy(.accessory)
-
-        activity = ProcessInfo.processInfo.beginActivity(
-            options: .userInitiatedAllowingIdleSystemSleep,
-            reason: "Polling Claude and Muse usage"
-        )
 
         // Recover promptly after the Mac wakes (timers don't fire during sleep).
         NSWorkspace.shared.notificationCenter.addObserver(

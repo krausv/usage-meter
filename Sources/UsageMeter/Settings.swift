@@ -19,6 +19,16 @@ enum BarDisplayMode: String, CaseIterable, Identifiable {
     }
 }
 
+extension RefreshInterval {
+    var label: String {
+        switch self {
+        case .thirtySeconds: return "30 s"
+        case .oneMinute: return "60 s"
+        case .fiveMinutes: return "5 min"
+        }
+    }
+}
+
 /// Persisted user preferences. UserDefaults keys are shared with `@AppStorage`
 /// in the views; this enum is the single source of truth for key names + defaults.
 enum SettingsKey {
@@ -39,7 +49,7 @@ enum SettingsKey {
             barDisplayMode: BarDisplayMode.dotAndFiveHour.rawValue,
             showMuseInBar: false,
             showCodexInBar: false,
-            refreshInterval: 60.0,
+            refreshInterval: RefreshInterval.defaultValue.rawValue,
             showPerModel: false,
             launchAtLogin: true,
             greenMax: 60.0,

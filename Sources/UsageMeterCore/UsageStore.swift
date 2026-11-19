@@ -30,9 +30,9 @@ public final class PollingStore<Snapshot>: ObservableObject {
     /// transient error recovers on its own within a few minutes.
     private let maxBackoff: TimeInterval = 5 * 60
 
-    public init(client: any SnapshotFetcher<Snapshot>, interval: TimeInterval = 60) {
+    public init(client: any SnapshotFetcher<Snapshot>, interval: TimeInterval = RefreshInterval.defaultValue.rawValue) {
         self.client = client
-        self.interval = interval
+        self.interval = Self.safeInterval(interval)
     }
 
     /// Idempotent: safe to call more than once — only the first call starts the
@@ -54,9 +54,17 @@ public final class PollingStore<Snapshot>: ObservableObject {
     /// Change the poll cadence at runtime (from Preferences). Takes effect on the
     /// next scheduled poll; also reschedules the pending one.
     public func setInterval(_ seconds: TimeInterval) {
-        guard seconds != interval else { return }
-        interval = seconds
+        let nextInterval = Self.safeInterval(seconds)
+        guard nextInterval != interval else { return }
+        interval = nextInterval
         if consecutiveFailures == 0 { scheduleNext(after: interval) }
+    }
+
+    private static func safeInterval(_ seconds: TimeInterval) -> TimeInterval {
+        guard seconds.isFinite, seconds >= RefreshInterval.thirtySeconds.rawValue else {
+            return RefreshInterval.defaultValue.rawValue
+        }
+        return seconds
     }
 
     /// Refresh only if the data is stale or currently showing an error. Used by
@@ -112,6 +120,7 @@ public final class PollingStore<Snapshot>: ObservableObject {
             // si starší toolchain na CI stěžuje, novější to přejde mlčky.
             Task { @MainActor [weak self] in await self?.refreshNow() }
         }
+        t.tolerance = delay * 0.1
         RunLoop.main.add(t, forMode: .common)
         timer = t
     }

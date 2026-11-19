@@ -10,14 +10,19 @@ struct PreferencesView: View {
     @AppStorage(SettingsKey.barDisplayMode) private var barModeRaw = BarDisplayMode.dotAndFiveHour.rawValue
     @AppStorage(SettingsKey.showMuseInBar) private var showMuseInBar = false
     @AppStorage(SettingsKey.showCodexInBar) private var showCodexInBar = false
-    @AppStorage(SettingsKey.refreshInterval) private var refreshInterval = 60.0
+    @AppStorage(SettingsKey.refreshInterval) private var refreshInterval = RefreshInterval.defaultValue.rawValue
     @AppStorage(SettingsKey.showPerModel) private var showPerModel = false
     @AppStorage(SettingsKey.launchAtLogin) private var launchAtLogin = true
     @AppStorage(SettingsKey.greenMax) private var greenMax = 60.0
     @AppStorage(SettingsKey.orangeMax) private var orangeMax = 85.0
     @AppStorage(SettingsKey.checkForUpdates) private var checkForUpdates = true
 
-    private let intervals: [(String, Double)] = [("30 s", 30), ("60 s", 60), ("5 min", 300)]
+    private var refreshIntervalSelection: Binding<RefreshInterval> {
+        Binding(
+            get: { RefreshInterval(preferenceValue: refreshInterval) },
+            set: { refreshInterval = $0.rawValue }
+        )
+    }
 
     /// Výška je shora omezená a obsah scrolluje — Form s plnou výškou se na
     /// menších displejích (MacBook Air) nevešel na obrazovku.
@@ -36,10 +41,14 @@ struct PreferencesView: View {
                 }
 
                 Section("Refresh") {
-                    Picker("Interval", selection: $refreshInterval) {
-                        ForEach(intervals, id: \.1) { Text($0.0).tag($0.1) }
+                    Picker("Interval", selection: refreshIntervalSelection) {
+                        ForEach(RefreshInterval.allCases, id: \.self) { interval in
+                            Text(interval.label).tag(interval)
+                        }
                     }
-                    .onChange(of: refreshInterval) { store.setInterval($0) }
+                    .onChange(of: refreshInterval) { storedInterval in
+                        store.setInterval(RefreshInterval(preferenceValue: storedInterval).rawValue)
+                    }
                 }
 
                 Section("Startup") {
